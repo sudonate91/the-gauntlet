@@ -1,6 +1,16 @@
 BSD 2-Clause License
 
-Copyright (c) 2023, rdutta
+This project incorporates code from multiple sources, each with their own copyright:
+
+Copyright (c) 2023, rdutta (The Gauntlet plugin)
+  https://github.com/LlemonDuck/the-gauntlet
+  
+Copyright (c) 2023, Tyler (StickySerum) (Gauntlet Map)
+  https://github.com/StickySerum/gauntlet-map
+  
+Copyright (c) 2024, powerus117 (RLCG Performance Tracker)
+  https://github.com/powerus117/RLCGPerformanceTracker
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
