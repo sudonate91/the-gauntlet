@@ -30,7 +30,7 @@ Supports both normal and corrupted versions.
 * Separate tracking for Normal and Corrupted Gauntlet
 * Persistent run history saved locally
 
-![sideNavScreenShot](/images/sideNavScreenShot.png)
+![sideNavScreenShot](/images/SideNavScreenShot.png)
 
 **Example Report:** [View Sample HTML Report](/images/Gauntlet%20Run%20History.pdf) (Click "View Full Report" button in-game to generate)
 
