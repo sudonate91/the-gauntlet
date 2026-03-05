@@ -44,8 +44,10 @@ public class StatsTracker
 	private int runStartTick;
 	private int totalDamageDealt;
 	private boolean isCorrupted;
+	private int previousAttackTick;
+	private int currentWeaponAttackSpeed;
 
-	public void startTracking(boolean corrupted)
+	public void startTracking(boolean corrupted, int initialTickCount)
 	{
 		currentRun = new RunStats();
 		currentRun.setCorrupted(corrupted);
@@ -55,6 +57,8 @@ public class StatsTracker
 		runStartTick = 0;
 		totalDamageDealt = 0;
 		isCorrupted = corrupted;
+		previousAttackTick = initialTickCount; // Give 4 ticks leeway at start (matches original)
+		currentWeaponAttackSpeed = 4; // Default weapon attack speed
 	}
 
 	public void onTick()
@@ -68,7 +72,7 @@ public class StatsTracker
 		currentRun.setTotalTicks(tickCount);
 	}
 
-	public void onPlayerAttack()
+	public void onPlayerAttack(int currentTickCount, int weaponSpeed)
 	{
 		if (currentRun == null)
 		{
@@ -76,8 +80,20 @@ public class StatsTracker
 		}
 
 		currentRun.setPlayerAttacks(currentRun.getPlayerAttacks() + 1);
-		lastActionTick = tickCount;
-		currentRun.setUsedTicks(currentRun.getUsedTicks() + 1);
+		
+		// Calculate lost ticks based on timing gap (matching original RLCGPerformanceTracker logic)
+		if (previousAttackTick > 0)
+		{
+			int ticksBetweenAttacks = currentTickCount - previousAttackTick;
+			int lostTicks = ticksBetweenAttacks - currentWeaponAttackSpeed;
+			if (lostTicks > 0)
+			{
+				currentRun.setLostTicks(currentRun.getLostTicks() + lostTicks);
+			}
+		}
+		
+		previousAttackTick = currentTickCount;
+		currentWeaponAttackSpeed = weaponSpeed;
 	}
 
 	public void onHunllefAttack()
@@ -179,7 +195,8 @@ public class StatsTracker
 
 		currentRun.setCompleted(completed);
 		currentRun.setOutcome(outcome);
-		currentRun.setLostTicks(tickCount - currentRun.getUsedTicks());
+		// usedTicks = totalTicks - lostTicks (matching original calculation)
+		currentRun.setUsedTicks(tickCount - currentRun.getLostTicks());
 
 		// Calculate DPS
 		if (tickCount > 0)

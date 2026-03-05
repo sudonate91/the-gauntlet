@@ -32,7 +32,6 @@ import java.awt.Graphics2D;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import nr.gauntlet.TheGauntletConfig;
-import nr.gauntlet.module.history.RunHistoryManager;
 import nr.gauntlet.module.history.RunStats;
 import nr.gauntlet.module.history.StatsTracker;
 import net.runelite.api.Client;
@@ -53,16 +52,13 @@ public class PerformanceStatsOverlay extends OverlayPanel
 	private final Client client;
 	private final TheGauntletConfig config;
 	private final StatsTracker statsTracker;
-	private final RunHistoryManager historyManager;
-	private boolean savedThisRun = false;
 
 	@Inject
-	public PerformanceStatsOverlay(Client client, TheGauntletConfig config, StatsTracker statsTracker, RunHistoryManager historyManager)
+	public PerformanceStatsOverlay(Client client, TheGauntletConfig config, StatsTracker statsTracker)
 	{
 		this.client = client;
 		this.config = config;
 		this.statsTracker = statsTracker;
-		this.historyManager = historyManager;
 		setPosition(OverlayPosition.TOP_LEFT);
 	}
 
@@ -71,22 +67,10 @@ public class PerformanceStatsOverlay extends OverlayPanel
 	{
 		RunStats stats = statsTracker.getCurrentRun();
 
-		// Only show in lobby after a run
-		if (!isInGauntletLobby() || stats == null || stats.getTotalTicks() <= 0)
+		// Only show in lobby after a run that was properly finished
+		if (!isInGauntletLobby() || stats == null || stats.getTotalTicks() <= 0 || stats.getOutcome() == null)
 		{
-			savedThisRun = false; // Reset when not in lobby
 			return null;
-		}
-		
-		// FALLBACK: Save run when entering lobby if not already saved
-		if (!savedThisRun && stats.getOutcome() == null)
-		{
-			// Run was never finished properly, save it now
-			client.addChatMessage(net.runelite.api.ChatMessageType.GAMEMESSAGE, "",
-				"[Gauntlet] Detected run in lobby, saving now! Ticks: " + stats.getTotalTicks(), null);
-			statsTracker.finishRun(false, "LOBBY_FALLBACK");
-			historyManager.addRun(stats);
-			savedThisRun = true;
 		}
 
 		// Title

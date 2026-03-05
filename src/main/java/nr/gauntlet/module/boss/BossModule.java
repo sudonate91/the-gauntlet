@@ -130,12 +130,9 @@ public final class BossModule implements Module
 
 	private boolean isCorrupted;
 	private boolean inBossFight;
-	private static final int MIN_TICKS_FOR_VALID_RUN = 100; // Filter out immediate teleports
 
 	// Tracking state
 	private boolean isHunllefMaging = false;
-	private int previousAttackTick = 0;
-	private int currentWeaponAttackSpeed = WEAPON_ATTACK_SPEED;
 
 	@Override
 	public void start()
@@ -161,11 +158,9 @@ public final class BossModule implements Module
 
 		// Reset previous run data and start new tracking
 		statsTracker.reset();
-		statsTracker.startTracking(isCorrupted);
+		statsTracker.startTracking(isCorrupted, client.getTickCount());
 		inBossFight = true;
 		isHunllefMaging = false;
-		previousAttackTick = client.getTickCount(); // Give 4 ticks leeway at start
-		currentWeaponAttackSpeed = WEAPON_ATTACK_SPEED;
 		log.info("Started tracking new {} Gauntlet run", isCorrupted ? "Corrupted" : "Normal");
 
 		overlayManager.add(timerOverlay);
@@ -179,12 +174,8 @@ public final class BossModule implements Module
 		// If fight is still active, player teleported out or left early
 		if (inBossFight && statsTracker.getCurrentRun() != null)
 		{
-			// Only save if fight lasted long enough (not an immediate disconnect)
-			if (statsTracker.getCurrentRun().getTotalTicks() >= MIN_TICKS_FOR_VALID_RUN)
-			{
-				statsTracker.finishRun(false, "TELEPORT");
-				historyManager.addRun(statsTracker.getCurrentRun());
-			}
+			statsTracker.finishRun(false, "TELEPORT");
+			historyManager.addRun(statsTracker.getCurrentRun());
 		}
 
 		eventBus.unregister(this);
@@ -195,8 +186,6 @@ public final class BossModule implements Module
 		hunllef = null;
 		inBossFight = false;
 		isHunllefMaging = false;
-		previousAttackTick = 0;
-		currentWeaponAttackSpeed = WEAPON_ATTACK_SPEED;
 		// Don't reset stats immediately - let the overlay display them in the lobby
 		// Stats will be reset when starting a new fight
 	}
@@ -220,8 +209,7 @@ public final class BossModule implements Module
 		{
 			// Player died - finish run with failure
 			inBossFight = false;
-			if (statsTracker.getCurrentRun() != null &&
-				statsTracker.getCurrentRun().getTotalTicks() >= MIN_TICKS_FOR_VALID_RUN)
+			if (statsTracker.getCurrentRun() != null)
 			{
 				statsTracker.finishRun(false, "DEATH");
 				historyManager.addRun(statsTracker.getCurrentRun());
@@ -234,35 +222,11 @@ public final class BossModule implements Module
 			log.info("Hunllef died! Finishing successful run.");
 			inBossFight = false;
 			
-			// Debug: Send chat message
 			if (statsTracker.getCurrentRun() != null)
-			{
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", 
-					"[Gauntlet] Run finished! Ticks: " + statsTracker.getCurrentRun().getTotalTicks() + 
-					" Min required: " + MIN_TICKS_FOR_VALID_RUN, null);
-			}
-			else
-			{
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", 
-					"[Gauntlet] ERROR: getCurrentRun() is null!", null);
-			}
-			
-			if (statsTracker.getCurrentRun() != null &&
-				statsTracker.getCurrentRun().getTotalTicks() >= MIN_TICKS_FOR_VALID_RUN)
 			{
 				statsTracker.finishRun(true, "SUCCESS");
 				log.info("Saving successful run with {} ticks", statsTracker.getCurrentRun().getTotalTicks());
 				historyManager.addRun(statsTracker.getCurrentRun());
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", 
-					"[Gauntlet] Run saved to history!", null);
-			}
-			else
-			{
-				log.warn("Run not saved - currentRun: {}, ticks: {}", 
-					statsTracker.getCurrentRun() != null, 
-					statsTracker.getCurrentRun() != null ? statsTracker.getCurrentRun().getTotalTicks() : 0);
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", 
-					"[Gauntlet] Run NOT saved - too short or null", null);
 			}
 		}
 	}
@@ -313,31 +277,30 @@ public final class BossModule implements Module
 		{
 			return;
 		}
-
 		// Player animation
 		if (event.getActor() == client.getLocalPlayer())
 		{
 			if (Arrays.stream(PLAYER_ATTACK_ANIMATION_IDS).anyMatch(value -> value == animationId))
 			{
-				// Player attack
-				statsTracker.onPlayerAttack();
+				// Determine weapon speed for this attack
+				int weaponSpeed = animationId == PLAYER_SCEPTRE_ATTACK_ID ? 
+					SCEPTRE_ATTACK_SPEED : WEAPON_ATTACK_SPEED;
+				
+				// Player attack - pass tick count and weapon speed for proper tick loss calculation
+				statsTracker.onPlayerAttack(client.getTickCount(), weaponSpeed);
 
 				// Check wrong attack style
 				if (!hasCorrectAttackStyle(animationId))
 				{
 					statsTracker.onWrongAttackStyle();
 				}
+				
 
 				// Check wrong offensive prayer
 				if (!hasCorrectOffensivePrayer(animationId))
 				{
 					statsTracker.onWrongOffensivePrayer();
 				}
-
-				// Update weapon speed
-				currentWeaponAttackSpeed = animationId == PLAYER_SCEPTRE_ATTACK_ID ? 
-					SCEPTRE_ATTACK_SPEED : WEAPON_ATTACK_SPEED;
-				previousAttackTick = client.getTickCount();
 			}
 		}
 		// Hunllef animation
@@ -406,8 +369,7 @@ public final class BossModule implements Module
 			message.contains("You exit the Gauntlet"))
 		{
 			inBossFight = false;
-			if (statsTracker.getCurrentRun() != null &&
-				statsTracker.getCurrentRun().getTotalTicks() >= MIN_TICKS_FOR_VALID_RUN)
+			if (statsTracker.getCurrentRun() != null)
 			{
 				statsTracker.finishRun(false, "TELEPORT");
 				historyManager.addRun(statsTracker.getCurrentRun());
@@ -450,9 +412,15 @@ public final class BossModule implements Module
 		boolean isNoWeaponAttack = animationId == PLAYER_KICK_ATTACK_ID ||
 			animationId == PLAYER_PUNCH_ATTACK_ID ||
 			animationId == PLAYER_SCEPTRE_ATTACK_ID;
+		
+		// Don't count no-weapon attacks (sceptre, kick, punch) - matching original plugin behavior
+		if (isNoWeaponAttack)
+		{
+			return true;
+		}
 
 		// Melee attacks
-		if (animationId == PLAYER_MELEE_ATTACK_ID || animationId == PLAYER_MELEE_ALT_ATTACK_ID || isNoWeaponAttack)
+		if (animationId == PLAYER_MELEE_ATTACK_ID || animationId == PLAYER_MELEE_ALT_ATTACK_ID)
 		{
 			return client.isPrayerActive(Prayer.PIETY) ||
 				client.isPrayerActive(Prayer.ULTIMATE_STRENGTH) ||

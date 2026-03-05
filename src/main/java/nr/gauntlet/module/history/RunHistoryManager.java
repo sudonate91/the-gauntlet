@@ -313,7 +313,8 @@ public class RunHistoryManager
 	 */
 	public File exportToHTML()
 	{
-		try (FileWriter writer = new FileWriter(HTML_FILE))
+		try (java.io.OutputStreamWriter writer = new java.io.OutputStreamWriter(
+				new java.io.FileOutputStream(HTML_FILE), java.nio.charset.StandardCharsets.UTF_8))
 		{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 

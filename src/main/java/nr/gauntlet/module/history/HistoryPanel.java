@@ -44,11 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
@@ -60,8 +56,7 @@ import net.runelite.client.ui.PluginPanel;
 public class HistoryPanel extends PluginPanel
 {
 	private final RunHistoryManager historyManager;
-	private JTable historyTable;
-	private DefaultTableModel tableModel;
+	private JPanel runsContainer;
 	private JLabel statsLabel;
 	private JLabel personalBestLabel;
 
@@ -115,59 +110,29 @@ public class HistoryPanel extends PluginPanel
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		contentPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-		// Table section
-		JPanel tablePanel = new JPanel(new BorderLayout());
-		tablePanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		tablePanel.setBorder(new EmptyBorder(0, 10, 0, 10));
+		// Runs section
+		JPanel runsPanel = new JPanel(new BorderLayout());
+		runsPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		runsPanel.setBorder(new EmptyBorder(0, 10, 0, 10));
 
-		JLabel tableTitle = new JLabel("Recent Runs");
-		tableTitle.setForeground(Color.WHITE);
-		tableTitle.setFont(tableTitle.getFont().deriveFont(12f));
-		tableTitle.setBorder(new EmptyBorder(0, 0, 5, 0));
-		tablePanel.add(tableTitle, BorderLayout.NORTH);
+		JLabel runsTitle = new JLabel("Recent Runs");
+		runsTitle.setForeground(Color.WHITE);
+		runsTitle.setFont(runsTitle.getFont().deriveFont(12f));
+		runsTitle.setBorder(new EmptyBorder(0, 0, 8, 0));
+		runsPanel.add(runsTitle, BorderLayout.NORTH);
 
-		String[] columnNames = {"Date", "Time", "Type", "Result"};
-		tableModel = new DefaultTableModel(columnNames, 0)
-		{
-			@Override
-			public boolean isCellEditable(int row, int column)
-			{
-				return false;
-			}
-		};
+		// Container for run cards
+		runsContainer = new JPanel();
+		runsContainer.setLayout(new BoxLayout(runsContainer, BoxLayout.Y_AXIS));
+		runsContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-		historyTable = new JTable(tableModel);
-		historyTable.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		historyTable.setForeground(Color.WHITE);
-		historyTable.setSelectionBackground(ColorScheme.MEDIUM_GRAY_COLOR);
-		historyTable.setRowHeight(30);
-		historyTable.setShowGrid(true);
-		historyTable.setGridColor(ColorScheme.LIGHT_GRAY_COLOR.darker());
-		historyTable.setIntercellSpacing(new Dimension(3, 2));
-		historyTable.setFont(historyTable.getFont().deriveFont(11f));
-
-		// Center align all columns
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		for (int i = 0; i < historyTable.getColumnCount(); i++)
-		{
-			historyTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-		}
-
-		// Adjust column widths to fit sidebar better
-		historyTable.getColumnModel().getColumn(0).setPreferredWidth(40); // Date
-		historyTable.getColumnModel().getColumn(0).setMaxWidth(50);
-		historyTable.getColumnModel().getColumn(1).setPreferredWidth(65); // Time
-		historyTable.getColumnModel().getColumn(2).setPreferredWidth(40); // Type
-		historyTable.getColumnModel().getColumn(2).setMaxWidth(50);
-		historyTable.getColumnModel().getColumn(3).setPreferredWidth(45); // Result
-
-		JScrollPane scrollPane = new JScrollPane(historyTable);
+		JScrollPane scrollPane = new JScrollPane(runsContainer);
 		scrollPane.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		scrollPane.getViewport().setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		tablePanel.add(scrollPane, BorderLayout.CENTER);
+		scrollPane.getViewport().setBackground(ColorScheme.DARK_GRAY_COLOR);
+		scrollPane.setBorder(null);
+		runsPanel.add(scrollPane, BorderLayout.CENTER);
 
-		contentPanel.add(tablePanel);
+		contentPanel.add(runsPanel);
 		contentPanel.add(Box.createVerticalStrut(10));
 
 		// Button panel - vertical layout for better space usage
@@ -177,13 +142,13 @@ public class HistoryPanel extends PluginPanel
 		buttonPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
 
 		// Primary action - View Full Report
-		JButton viewReportButton = new JButton("📊 View Full Report (HTML)");
+		JButton viewReportButton = new JButton("View Full Report (HTML)");
 		viewReportButton.setToolTipText("Opens interactive charts in your browser");
-		viewReportButton.setFont(viewReportButton.getFont().deriveFont(12f));
+		viewReportButton.setFont(viewReportButton.getFont().deriveFont(14f).deriveFont(java.awt.Font.BOLD));
 		viewReportButton.setBackground(new Color(33, 150, 243));
 		viewReportButton.setForeground(Color.WHITE);
 		viewReportButton.setAlignmentX(CENTER_ALIGNMENT);
-		viewReportButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+		viewReportButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 		viewReportButton.addActionListener(e -> exportHTML());
 		buttonPanel.add(viewReportButton);
 
@@ -324,26 +289,72 @@ public class HistoryPanel extends PluginPanel
 			personalBestLabel.setText("🏆 No successful corrupted runs yet");
 		}
 
-		// Update table - show most recent runs first
-		tableModel.setRowCount(0);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
+		// Update card view - show most recent runs first
+		runsContainer.removeAll();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
 		
 		for (RunStats run : history)
 		{
-			String outcome = run.getOutcomeDisplay();
-			String outcomeSymbol = outcome.equals("SUCCESS") ? "✓" :
-															outcome.equals("TELEPORT") ? "◄" : "✗";
-			
-			Date runDate = new Date(run.getDate());
-			String timeDisplay = String.format("%d (%.0f%%)", run.getTotalTicks(), run.getEfficiency());
-
-			Object[] row = {
-				dateFormat.format(runDate),
-				timeDisplay,
-				run.isCorrupted() ? "CG" : "Norm",
-				outcomeSymbol
-			};
-			tableModel.addRow(row);
+			JPanel card = createRunCard(run, dateFormat);
+			runsContainer.add(card);
+			runsContainer.add(Box.createVerticalStrut(4));
 		}
+		
+		runsContainer.revalidate();
+		runsContainer.repaint();
+	}
+
+	private JPanel createRunCard(RunStats run, SimpleDateFormat dateFormat)
+	{
+		JPanel card = new JPanel();
+		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+		card.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		card.setBorder(new EmptyBorder(6, 8, 6, 8));
+		
+		String outcome = run.getOutcomeDisplay();
+		Color outcomeColor = outcome.equals("SUCCESS") ? new Color(76, 175, 80) :
+											outcome.equals("TELEPORT") ? new Color(255, 193, 7) :
+											new Color(244, 67, 54);
+		
+		Date runDate = new Date(run.getDate());
+		SimpleDateFormat timeFormat = new SimpleDateFormat("MMM dd HH:mm");
+		
+		// Row 1: Date
+		card.add(createRow("Date", timeFormat.format(runDate), Color.LIGHT_GRAY, Color.white));
+		
+		// Row 2: Ticks/Eff
+		String ticksEff = String.format("%d ticks  •  %.0f%%", run.getTotalTicks(), run.getEfficiency());
+		card.add(createRow("Ticks/Eff", ticksEff, Color.LIGHT_GRAY, Color.white));
+		
+		// Row 3: Type
+		String type = run.isCorrupted() ? "Corrupted" : "Normal";
+		Color typeColor = run.isCorrupted() ? new Color(220, 118, 51) : Color.GRAY;
+		card.add(createRow("Type", type, Color.LIGHT_GRAY, typeColor));
+		
+		// Row 4: Outcome
+		card.add(createRow("Outcome", outcome, Color.LIGHT_GRAY, outcomeColor));
+		
+		return card;
+	}
+	
+	private JPanel createRow(String label, String value, Color labelColor, Color valueColor)
+	{
+		JPanel row = new JPanel(new BorderLayout(5, 0));
+		row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+		
+		JLabel labelComponent = new JLabel(label);
+		labelComponent.setForeground(labelColor);
+		labelComponent.setFont(labelComponent.getFont().deriveFont(12f));
+		
+		JLabel valueComponent = new JLabel(value);
+		valueComponent.setForeground(valueColor);
+		valueComponent.setFont(valueComponent.getFont().deriveFont(12f).deriveFont(java.awt.Font.BOLD));
+		valueComponent.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		
+		row.add(labelComponent, BorderLayout.WEST);
+		row.add(valueComponent, BorderLayout.EAST);
+		
+		return row;
 	}
 }
