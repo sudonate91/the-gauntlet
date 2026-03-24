@@ -27,7 +27,7 @@
 
 package nr.gauntlet.module.history;
 
-import nr.gauntlet.TheGauntletConfig;
+import nr.gauntlet.GauntletToolkitConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -63,14 +63,14 @@ public class RunHistoryManager
 	private static final File HTML_FILE = new File(HISTORY_DIR, "gauntlet-runs.html");
 
 	private final ConfigManager configManager;
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 	private final Gson gson;
 
 	@Getter
 	private final List<RunStats> history;
 
 	@Inject
-	public RunHistoryManager(ConfigManager configManager, TheGauntletConfig config, Gson gson)
+	public RunHistoryManager(ConfigManager configManager, GauntletToolkitConfig config, Gson gson)
 	{
 		this.configManager = configManager;
 		this.config = config;

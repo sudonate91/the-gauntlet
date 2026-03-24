@@ -2,7 +2,7 @@
  * BSD 2-Clause License
  *
  * Copyright (c) 2023, Tyler (StickySerum) (Original Gauntlet Map plugin)
- * Copyright (c) 2026, Integration and modifications for The Gauntlet - Enhanced
+ * Copyright (c) 2026, Integration and modifications for Gauntlet Toolkit
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
-import nr.gauntlet.TheGauntletConfig;
+import nr.gauntlet.GauntletToolkitConfig;
 import nr.gauntlet.module.Module;
 
 import javax.inject.Inject;
@@ -70,7 +70,7 @@ public class MapModule implements Module
 	private MapPanel panel;
 
 	@Inject
-	private TheGauntletConfig config;
+	private GauntletToolkitConfig config;
 
 	@Inject
 	private MapSession session;

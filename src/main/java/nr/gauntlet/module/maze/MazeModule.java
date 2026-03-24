@@ -27,7 +27,7 @@
 
 package nr.gauntlet.module.maze;
 
-import nr.gauntlet.TheGauntletConfig;
+import nr.gauntlet.GauntletToolkitConfig;
 import nr.gauntlet.module.Module;
 import nr.gauntlet.module.overlay.TimerOverlay;
 import java.awt.Color;
@@ -116,7 +116,7 @@ public final class MazeModule implements Module
 	@Inject
 	private ClientThread clientThread;
 	@Inject
-	private TheGauntletConfig config;
+	private GauntletToolkitConfig config;
 	@Inject
 	private NpcOverlayService npcOverlayService;
 	@Inject
@@ -159,7 +159,7 @@ public final class MazeModule implements Module
 	@Subscribe
 	void onConfigChanged(final ConfigChanged event)
 	{
-		if (!event.getGroup().equals(TheGauntletConfig.CONFIG_GROUP))
+		if (!event.getGroup().equals(GauntletToolkitConfig.CONFIG_GROUP))
 		{
 			return;
 		}

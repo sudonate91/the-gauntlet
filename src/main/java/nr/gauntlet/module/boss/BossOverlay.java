@@ -27,9 +27,9 @@
 
 package nr.gauntlet.module.boss;
 
-import nr.gauntlet.TheGauntletConfig;
-import nr.gauntlet.TheGauntletConfig.TileOutline;
-import nr.gauntlet.TheGauntletPlugin;
+import nr.gauntlet.GauntletToolkitConfig;
+import nr.gauntlet.GauntletToolkitConfig.TileOutline;
+import nr.gauntlet.GauntletToolkitPlugin;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -53,14 +53,14 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 class BossOverlay extends Overlay
 {
 	private final Client client;
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 	private final BossModule bossModule;
 
 	@Inject
 	public BossOverlay(
 		final Client client,
-		final TheGauntletPlugin plugin,
-		final TheGauntletConfig config,
+		final GauntletToolkitPlugin plugin,
+		final GauntletToolkitConfig config,
 		final BossModule bossModule)
 	{
 		super(plugin);

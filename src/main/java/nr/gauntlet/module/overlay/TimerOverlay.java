@@ -28,8 +28,8 @@
 
 package nr.gauntlet.module.overlay;
 
-import nr.gauntlet.TheGauntletConfig;
-import nr.gauntlet.TheGauntletPlugin;
+import nr.gauntlet.GauntletToolkitConfig;
+import nr.gauntlet.GauntletToolkitPlugin;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -57,7 +57,7 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 @Singleton
 public final class TimerOverlay extends OverlayPanel
 {
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 	private final ChatMessageManager chatMessageManager;
 
 	private final PanelComponent timerComponent;
@@ -70,7 +70,7 @@ public final class TimerOverlay extends OverlayPanel
 	private long lastElapsed;
 
 	@Inject
-	TimerOverlay(final TheGauntletPlugin plugin, final TheGauntletConfig config, final ChatMessageManager chatMessageManager)
+	TimerOverlay(final GauntletToolkitPlugin plugin, final GauntletToolkitConfig config, final ChatMessageManager chatMessageManager)
 	{
 		super(plugin);
 

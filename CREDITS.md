@@ -1,6 +1,6 @@
 # Credits & Attribution
 
-This project, **The Gauntlet - Enhanced**, is a derivative work that integrates code and assets from three excellent RuneLite community plugins. All original work remains under the BSD 2-Clause License, and this derivative maintains the same license while properly attributing all contributors.
+This project, **Gauntlet Toolkit**, is a derivative work that integrates code and assets from three excellent RuneLite community plugins. All original work remains under the BSD 2-Clause License, and this derivative maintains the same license while properly attributing all contributors.
 
 ---
 
@@ -149,4 +149,4 @@ Special thanks to:
 - **powerus117** for the performance tracking and statistics system
 - The RuneLite community for supporting open-source development
 
-Without their excellent work, this enhanced plugin would not be possible! 🎉
+Without their excellent work, this plugin would not be possible! 🎉

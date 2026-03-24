@@ -2,7 +2,7 @@
  * BSD 2-Clause License
  *
  * Copyright (c) 2023, Tyler (StickySerum) (Original Gauntlet Map plugin)
- * Copyright (c) 2026, Integration and modifications for The Gauntlet - Enhanced
+ * Copyright (c) 2026, Integration and modifications for Gauntlet Toolkit
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,13 +47,13 @@ import net.runelite.api.ObjectID;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.util.ImageUtil;
-import nr.gauntlet.TheGauntletConfig;
+import nr.gauntlet.GauntletToolkitConfig;
 
 @Singleton
 public class MapSession
 {
 	private final MapModule module;
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 
 	private static final int TILE_DISTANCE = 16;
 	private static final int BOSS_ROOM = 25;
@@ -98,7 +98,7 @@ public class MapSession
 	private boolean newSession = true;
 
 	@Inject
-	MapSession(MapModule module, TheGauntletConfig config)
+	MapSession(MapModule module, GauntletToolkitConfig config)
 	{
 		this.module = module;
 		this.config = config;

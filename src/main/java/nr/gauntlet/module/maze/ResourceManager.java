@@ -28,9 +28,9 @@
 
 package nr.gauntlet.module.maze;
 
-import nr.gauntlet.TheGauntletConfig;
-import nr.gauntlet.TheGauntletConfig.TrackingMode;
-import nr.gauntlet.TheGauntletPlugin;
+import nr.gauntlet.GauntletToolkitConfig;
+import nr.gauntlet.GauntletToolkitConfig.TrackingMode;
+import nr.gauntlet.GauntletToolkitPlugin;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.AbstractMap;
@@ -55,9 +55,9 @@ class ResourceManager
 	private final EnumMap<Resource, ResourceCounter> counterByResource = new EnumMap<>(Resource.class);
 
 	@Inject
-	private TheGauntletPlugin plugin;
+	private GauntletToolkitPlugin plugin;
 	@Inject
-	private TheGauntletConfig config;
+	private GauntletToolkitConfig config;
 	@Inject
 	private ItemManager itemManager;
 	@Inject
@@ -244,7 +244,7 @@ class ResourceManager
 
 		private ResourceCounter(
 			final BufferedImage bufferedImage,
-			final TheGauntletPlugin plugin,
+			final GauntletToolkitPlugin plugin,
 			final Resource resource,
 			final int count,
 			final int target)

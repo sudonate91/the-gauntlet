@@ -31,7 +31,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import nr.gauntlet.TheGauntletConfig;
+import nr.gauntlet.GauntletToolkitConfig;
 import nr.gauntlet.module.history.RunStats;
 import nr.gauntlet.module.history.StatsTracker;
 import net.runelite.api.Client;
@@ -50,11 +50,11 @@ public class PerformanceStatsOverlay extends OverlayPanel
 	private static final int REGION_ID_GAUNTLET_LOBBY = 12127;
 
 	private final Client client;
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 	private final StatsTracker statsTracker;
 
 	@Inject
-	public PerformanceStatsOverlay(Client client, TheGauntletConfig config, StatsTracker statsTracker)
+	public PerformanceStatsOverlay(Client client, GauntletToolkitConfig config, StatsTracker statsTracker)
 	{
 		this.client = client;
 		this.config = config;

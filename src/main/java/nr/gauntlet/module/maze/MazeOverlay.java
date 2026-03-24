@@ -27,8 +27,8 @@
 
 package nr.gauntlet.module.maze;
 
-import nr.gauntlet.TheGauntletConfig;
-import nr.gauntlet.TheGauntletPlugin;
+import nr.gauntlet.GauntletToolkitConfig;
+import nr.gauntlet.GauntletToolkitPlugin;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,7 +51,7 @@ import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 class MazeOverlay extends Overlay
 {
 	private final Client client;
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 	private final MazeModule mazeModule;
 	private final ModelOutlineRenderer modelOutlineRenderer;
 	private final ResourceManager resourceManager;
@@ -59,8 +59,8 @@ class MazeOverlay extends Overlay
 	@Inject
 	MazeOverlay(
 		final Client client,
-		final TheGauntletPlugin plugin,
-		final TheGauntletConfig config,
+		final GauntletToolkitPlugin plugin,
+		final GauntletToolkitConfig config,
 		final MazeModule mazeModule,
 		final ModelOutlineRenderer modelOutlineRenderer,
 		final ResourceManager resourceManager)

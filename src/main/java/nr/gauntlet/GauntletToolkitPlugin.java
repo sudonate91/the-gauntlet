@@ -56,11 +56,11 @@ import net.runelite.client.util.ImageUtil;
 
 @Slf4j
 @PluginDescriptor(
-	name = "The Gauntlet - Enhanced",
-	description = "The Original All-in-one plugin for The Gauntlet. BUT ENHANCED",
-	tags = {"the", "gauntlet", "enhanced"}
+	name = "Gauntlet Toolkit",
+	description = "Comprehensive all-in-one plugin for The Gauntlet with map, stats, and overlays",
+	tags = {"the", "gauntlet", "toolkit"}
 )
-public final class TheGauntletPlugin extends Plugin
+public final class GauntletToolkitPlugin extends Plugin
 {
 	private static final int VARBIT_MAZE = 9178;
 	private static final int VARBIT_BOSS = 9177;
@@ -71,7 +71,7 @@ public final class TheGauntletPlugin extends Plugin
 		BufferedImage icon = null;
 		try
 		{
-			icon = ImageUtil.loadImageResource(TheGauntletPlugin.class, "icon.png");
+			icon = ImageUtil.loadImageResource(GauntletToolkitPlugin.class, "icon.png");
 		}
 		catch (Exception e)
 		{
@@ -95,7 +95,7 @@ public final class TheGauntletPlugin extends Plugin
 	@Inject
 	private ClientToolbar clientToolbar;
 	@Inject
-	private TheGauntletConfig config;
+	private GauntletToolkitConfig config;
 	@Inject
 	private OverlayManager overlayManager;
 	@Inject
@@ -105,9 +105,9 @@ public final class TheGauntletPlugin extends Plugin
 	private NavigationButton navButton;
 
 	@Provides
-	TheGauntletConfig provideConfig(final ConfigManager configManager)
+	GauntletToolkitConfig provideConfig(final ConfigManager configManager)
 	{
-		return configManager.getConfig(TheGauntletConfig.class);
+		return configManager.getConfig(GauntletToolkitConfig.class);
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public final class TheGauntletPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(final ConfigChanged event)
 	{
-		if (!event.getGroup().equals(TheGauntletConfig.CONFIG_GROUP))
+		if (!event.getGroup().equals(GauntletToolkitConfig.CONFIG_GROUP))
 		{
 			return;
 		}

@@ -2,7 +2,7 @@
  * BSD 2-Clause License
  *
  * Copyright (c) 2023, Tyler (StickySerum) (Original Gauntlet Map plugin)
- * Copyright (c) 2026, Integration and modifications for The Gauntlet - Enhanced
+ * Copyright (c) 2026, Integration and modifications for Gauntlet Toolkit
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,15 +39,15 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.ComponentOrientation;
 import net.runelite.client.ui.overlay.components.ImageComponent;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
-import nr.gauntlet.TheGauntletConfig;
+import nr.gauntlet.GauntletToolkitConfig;
 
 public class MapOverlay extends OverlayPanel
 {
 	private final MapSession session;
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 
 	@Inject
-	private MapOverlay(MapSession session, TheGauntletConfig config, Client client, ModelOutlineRenderer modelOutlineRenderer)
+	private MapOverlay(MapSession session, GauntletToolkitConfig config, Client client, ModelOutlineRenderer modelOutlineRenderer)
 	{
 		this.session = session;
 		this.config = config;

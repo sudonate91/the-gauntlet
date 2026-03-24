@@ -1,8 +1,8 @@
-# The Gauntlet - Enhanced
+# Gauntlet Toolkit
 
 <div align="center">
 
-An enhanced all-in-one plugin for The Gauntlet, combining the best features from multiple community plugins.
+A comprehensive all-in-one plugin for The Gauntlet, combining the best features from multiple community plugins.
 
 **Supports both Normal and Corrupted versions**
 
@@ -16,7 +16,7 @@ An enhanced all-in-one plugin for The Gauntlet, combining the best features from
   - [Core Gauntlet Features](#core-gauntlet-features)
   - [Run History & Performance Tracking](#run-history--performance-tracking)
   - [Live Maze Map](#live-maze-map)
-  - [Enhanced Run History Panel](#enhanced-run-history-panel)
+  - [Run History Panel](#run-history-panel)
 - [Credits & Attribution](#-credits--attribution)
 - [License](#-license)
 - [Contribute](#-contribute)
@@ -99,7 +99,7 @@ An enhanced all-in-one plugin for The Gauntlet, combining the best features from
 
 </div>
 
-### Enhanced Run History Panel
+### Run History Panel
 *New feature unique to this plugin*
 
 - Compact sidebar panel showing recent runs and personal bests
@@ -120,7 +120,7 @@ An enhanced all-in-one plugin for The Gauntlet, combining the best features from
 
 ## 🙏 Credits & Attribution
 
-This plugin is an enhanced combination of code from three excellent RuneLite plugins:
+This plugin combines code from three excellent RuneLite plugins:
 
 <table>
 <tr>

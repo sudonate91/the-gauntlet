@@ -27,8 +27,8 @@
 
 package nr.gauntlet.module.maze;
 
-import nr.gauntlet.TheGauntletConfig;
-import nr.gauntlet.TheGauntletPlugin;
+import nr.gauntlet.GauntletToolkitConfig;
+import nr.gauntlet.GauntletToolkitPlugin;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.Collection;
@@ -44,14 +44,14 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 @Singleton
 class MinimapOverlay extends Overlay
 {
-	private final TheGauntletConfig config;
+	private final GauntletToolkitConfig config;
 	private final MazeModule mazeModule;
 	private final ResourceManager resourceManager;
 
 	@Inject
 	MinimapOverlay(
-		final TheGauntletPlugin plugin,
-		final TheGauntletConfig config,
+		final GauntletToolkitPlugin plugin,
+		final GauntletToolkitConfig config,
 		final MazeModule mazeModule,
 		final ResourceManager resourceManager)
 	{
