@@ -96,6 +96,15 @@ public class StatsTracker
 		currentWeaponAttackSpeed = weaponSpeed;
 	}
 
+	public void onFoodEaten(int delay)
+	{
+		if (currentRun == null)
+		{
+			return;
+		}
+		previousAttackTick += delay;
+	}
+
 	public void onHunllefAttack()
 	{
 		if (currentRun == null)
