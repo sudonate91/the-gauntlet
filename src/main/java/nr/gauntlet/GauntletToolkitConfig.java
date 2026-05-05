@@ -932,7 +932,7 @@ public interface GauntletToolkitConfig extends Config
 	)
 	default boolean trackRunHistory()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
@@ -956,7 +956,7 @@ public interface GauntletToolkitConfig extends Config
 	)
 	default boolean lobbyOverlayEnabled()
 	{
-		return true;
+		return false;
 	}
 
 	// Gauntlet Map
