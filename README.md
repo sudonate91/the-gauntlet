@@ -1,10 +1,45 @@
-# The Gauntlet
+# ⚠️ **PROJECT DISCONTINUED** ⚠️
 
 <div align="center">
 
-A comprehensive all-in-one plugin for The Gauntlet, combining the best features from multiple community plugins.
+# 🚨 THIS PLUGIN HAS BEEN REVERTED BY RUNELITE 🚨
 
-**Supports both Normal and Corrupted versions**
+### **We sincerely apologize for the inconvenience and headaches caused.**
+
+---
+
+**The original [LlemonDuck/the-gauntlet](https://github.com/LlemonDuck/the-gauntlet) plugin has been reinstated on the Plugin Hub.**
+
+RuneLite received numerous complaints from the community about the changes made to this fork. Given that the original plugin is extremely popular (~300k installs, top 10 plugin), these changes impacted a large number of players.
+
+**RuneLite's decision:**
+> "We've decided the existing plugin is feature complete as it is and the other features that you want (html exports and performance trackers) should stay in the other plugins."
+
+**Official revert commit:** [762c7dcd8752c2d70015dda960af34f9865503d8](https://github.com/runelite/plugin-hub/commit/762c7dcd8752c2d70015dda960af34f9865503d8)
+
+---
+
+### 🙏 **If you were affected by this transition, we deeply apologize.**
+
+**Please reinstall the original "The Gauntlet" plugin from the Plugin Hub for the stable, community-preferred version.**
+
+For performance tracking and HTML exports, please use the standalone plugins:
+- [RLCG Performance Tracker](https://github.com/powerus117/RLCGPerformanceTracker) by powerus117
+- [Gauntlet Map](https://github.com/StickySerum/gauntlet-map) by StickySerum
+
+---
+
+</div>
+
+---
+
+# ~~The Gauntlet~~
+
+<div align="center">
+
+~~A comprehensive all-in-one plugin for The Gauntlet, combining the best features from multiple community plugins.~~
+
+~~**Supports both Normal and Corrupted versions**~~
 
 </div>
 
