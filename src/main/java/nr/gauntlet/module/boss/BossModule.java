@@ -32,7 +32,12 @@ import nr.gauntlet.module.history.RunHistoryManager;
 import nr.gauntlet.module.history.StatsTracker;
 import nr.gauntlet.module.overlay.TimerOverlay;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,7 +59,12 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
-import java.util.Arrays;
+import net.runelite.api.ItemContainer;
+import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
+import net.runelite.client.util.Text;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -105,6 +115,11 @@ public final class BossModule implements Module
 	// Timings
 	private static final int WEAPON_ATTACK_SPEED = 4;
 	private static final int SCEPTRE_ATTACK_SPEED = 5;
+	private static final int NORMAL_FOOD_DELAY = 3;
+	private static final int FAST_FOOD_DELAY = 2;
+
+	private final Map<Integer, Integer> pendingEats = new HashMap<>();
+	private final Pattern eatPattern = Pattern.compile("^eat");
 
 	@Getter(AccessLevel.PACKAGE)
 	private final List<NPC> tornadoes = new ArrayList<>();
@@ -186,6 +201,7 @@ public final class BossModule implements Module
 		hunllef = null;
 		inBossFight = false;
 		isHunllefMaging = false;
+		pendingEats.clear();
 		// Don't reset stats immediately - let the overlay display them in the lobby
 		// Stats will be reset when starting a new fight
 	}
@@ -404,6 +420,58 @@ public final class BossModule implements Module
 		else if (HUNLLEF_IDS.contains(npc.getId()))
 		{
 			hunllef = null;
+		}
+	}
+
+	@Subscribe
+	public void onMenuOptionClicked(final MenuOptionClicked event)
+	{
+		if (!inBossFight)
+		{
+			return;
+		}
+
+		String menuOption = Text.removeTags(event.getMenuOption()).toLowerCase();
+		if (eatPattern.matcher(menuOption).find())
+		{
+			ItemContainer inv = client.getItemContainer(InventoryID.INV);
+			int slot = event.getMenuEntry().getParam0();
+			pendingEats.put(slot, inv.getItems()[slot].getId());
+		}
+	}
+
+	@Subscribe
+	public void onItemContainerChanged(final ItemContainerChanged event)
+	{
+		if (!inBossFight)
+		{
+			return;
+		}
+
+		if (event.getItemContainer().getId() != InventoryID.INV)
+		{
+			return;
+		}
+
+		ItemContainer itemContainer = event.getItemContainer();
+		Iterator<Map.Entry<Integer, Integer>> it = pendingEats.entrySet().iterator();
+		while (it.hasNext())
+		{
+			Map.Entry<Integer, Integer> entry = it.next();
+			int slot = entry.getKey();
+			int itemId = entry.getValue();
+			if (itemContainer.getItems()[slot].getId() != itemId)
+			{
+				if (itemId == ItemID.GAUNTLET_FOOD)
+				{
+					statsTracker.onFoodEaten(NORMAL_FOOD_DELAY);
+				}
+				else if (itemId == ItemID.GAUNTLET_COMBO_FOOD || itemId == ItemID.GAUNTLET_COMBO_FOOD_HM)
+				{
+					statsTracker.onFoodEaten(FAST_FOOD_DELAY);
+				}
+				it.remove();
+			}
 		}
 	}
 
